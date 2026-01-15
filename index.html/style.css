@@ -1,0 +1,74 @@
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+.form-container {
+    max-width: 600px;
+    margin: 30px auto;
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.red, .error, .error textarea, .error input {
+    border-color: red;
+    color: red;
+}
+h1, h2 {
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+p {
+    margin-bottom: 20px;
+}
+
+input[type="submit"] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+input.error, textarea.error {
+    border: 2px solid red;
+}
+.error-message {
+    color: red;
+    font-size: 12px;
+}
+.doit input{
+    background-color: #4CAF50;
+    cursor: pointer;
+    color: #ffffff;
+}
+/* Hidden extra fields */
+.hidden {
+    display: none;
+}
+label, select, input, textarea {
+    display: block;
+    width: 95%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+

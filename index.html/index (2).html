@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Workshop 5</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+<h1 style="color: red;">Dynamic Web Applications with Javascript TO00BL10-3023</h1>
+    <h1>Workshop 5: Smart Forms</h1>
+
+    <section class="form-container">
+        <h2>Exercise 1: Contact Form</h2>
+        <p>In this exercise, you will validate email and comment fields.</p>
+        <form id="contact-form">
+            <label>Email address:<br>
+                <input type="text" name="email" id="email">
+            </label>
+            <p id="email-error" class="error-message"></p>
+
+            <label>Comment:<br>
+                <textarea name="comment" id="comment"></textarea>
+            </label>
+            <p id="comment-error" class="error-message"></p>
+
+            <input type="submit" value="Send">
+        </form>
+        
+    </section>
+
+    <section class="form-container">
+        <h2>Exercise 2: Membership Calculator</h2>
+        <p>Calculate your membership cost and check for applicable discounts.</p>
+        <form id="membership-form">
+            <fieldset>
+                <legend>Calculate Your Membership</legend>
+                <label for="type">Membership Type</label> 
+                <select name="type" id="type" required>
+                    <option value="basic">Basic - $10.00</option>
+                    <option value="premium">Premium - $15.00</option>
+                    <option value="gold">Gold - $20.00</option>
+                    <option value="platinum">Platinum - $25.00</option>
+                </select>
+
+                <label for="years">Years</label>
+                <input type="number" name="years" id="years" min="1" required>
+
+                <label for="cost">Cost</label>
+                <input type="text" name="cost" id="cost" disabled>
+
+                <p id="discount-message"></p>
+
+                <input type="submit" value="Calculate">
+            </fieldset>
+        </form>
+    </section>
+
+    <section class="form-container">
+        <h2>Exercise 3: Book Order</h2>
+        <p>Calculate the total price for a bulk book order.</p>
+    <fieldset>
+        <legend>Calculate a bulk book order.</legend>
+        <div>
+            <label for="quantity">Quantity</label>
+            <input type="number" name="quantity" id="quantity" value="1" min="1" required>
+        </div>
+        <div>
+            <label for="price">Price Per Unit</label>
+            <input type="text" name="price" id="price" value="1.00" required>
+        </div>
+        <div>
+            <label for="tax">VAT (%)</label>
+            <input type="text" name="tax" id="tax" value="0.0" required>
+        </div>
+        <div>
+            <label for="discount">Discount (%)</label>
+            <input type="text" name="discount" id="discount" value="0.00" required>
+        </div>
+        
+        <div class="doit">
+            <input type="button" value="Calculate" id="submit-calculate" onclick="calculate()">
+        </div>
+    </fieldset>
+    </section>
+
+    <section class="form-container">
+        <h2>Exercise 4: Hidden Extra Fields</h2>
+        <p>Display additional input fields based on the user's contact method selection.</p>
+        <form id="hidden-fields-form">
+            <label for="contact-method">Preferred Contact Method</label>
+            <select id="contact-method" name="contact-method">
+                <option value="">Select a method</option>
+                <option value="email">Email</option>
+                <option value="phone">Phone</option>
+                <option value="sms">SMS</option>
+            </select>
+            <div id="extra-field" class="hidden"></div>
+        </form>
+    </section>
+
+    <script>
+        // Exercise 1: Contact Form Validation
+        document.getElementById('contact-form').onsubmit = function (event) {
+            let email = document.getElementById('email').value;
+            let comment = document.getElementById('comment').value;
+            let isValid = true;
+
+            // Email validation
+            if (email.length < 6 || email.length > 15 || !email.includes('@')) {
+                document.getElementById('email-error').textContent = "Please enter a valid email.";
+                isValid = false;
+            } else {
+                document.getElementById('email-error').textContent = "";
+            }
+
+            // Comment validation and trimming
+            comment = comment.trim();
+            if (comment === '' || comment.length > 50) {
+                document.getElementById('comment-error').textContent = "Comment must be between 1 and 50 characters.";
+                isValid = false;
+            } else {
+                document.getElementById('comment-error').textContent = "";
+            }
+
+            if (!isValid) {
+                event.preventDefault();
+            }
+        };
+
+        // Exercise 2: Membership Calculator
+        document.getElementById('membership-form').onsubmit = function (event) {
+            event.preventDefault();
+            let type = document.getElementById('type').value;
+            let years = parseInt(document.getElementById('years').value);
+            let costPerYear = {
+                'basic': 10,
+                'premium': 15,
+                'gold': 20,
+                'platinum': 25
+            }[type];
+            let totalCost = costPerYear * years;
+            let discountMessage = "";
+
+            if (years > 2) {
+                totalCost *= 0.8; // 20% discount
+                discountMessage = "You get a 20% discount!";
+            }
+            if (years >= 5) {
+                totalCost -= 5; // Extra €5 discount
+                discountMessage += " Plus an extra €5 discount!";
+            }
+
+            document.getElementById('cost').value = totalCost.toFixed(2);
+            document.getElementById('discount-message').textContent = discountMessage;
+        };
+
+      // Exercise 3: Book Order Calculation
+      function calculate() {
+    // Get values from form inputs and convert appropriately
+    const quantity = parseInt(document.getElementById('quantity').value, 10); // Convert to integer
+    const price = parseFloat(document.getElementById('price').value); // Convert to float
+    const tax = parseFloat(document.getElementById('tax').value); // Convert to float
+    const discount = parseFloat(document.getElementById('discount').value); // Convert to float
+    const shipping = parseFloat(document.getElementById('shipping').value); // Convert to float
+
+    // Calculate total cost before tax and discount
+    let totalCost = quantity * price;
+
+    // Double the discount if quantity is greater than 100
+    let effectiveDiscount = discount;
+    if (quantity > 100) {
+        effectiveDiscount *= 2; // Double the discount
+    }
+
+    // Calculate discount amount
+    const discountAmount = totalCost * (effectiveDiscount / 100);
+
+    // Calculate taxable amount (total cost - discount amount)
+    const taxableAmount = totalCost - discountAmount;
+
+    // Initialize tax amount
+    let taxAmount = 0;
+
+    // Calculate tax amount only if VAT is greater than 0
+    if (tax > 0) {
+        taxAmount = taxableAmount * (tax / 100);
+    }
+
+ calculate()
+
+    // Display the total in the total input field
+    document.getElementById('total').value = finalTotal.toFixed(2);
+}
+        // Exercise 4: Hidden Extra Fields
+        document.getElementById('contact-method').onchange = function () {
+            let selectedMethod = this.value;
+            let extraField = document.getElementById('extra-field');
+            if (selectedMethod === 'email') {
+                extraField.innerHTML = '<label>Email:<br><input type="email" name="email"></label>';
+                extraField.classList.remove('hidden');
+            } else if (selectedMethod === 'phone') {
+                extraField.innerHTML = '<label>Phone:<br><input type="tel" name="phone"></label>';
+                extraField.classList.remove('hidden');
+            } else if (selectedMethod === 'sms') {
+                extraField.innerHTML = '<label>SMS Number:<br><input type="text" name="sms"></label>';
+                extraField.classList.remove('hidden');
+            } else {
+                extraField.innerHTML = '';
+                extraField.classList.add('hidden');
+            }
+        };
+    </script>
+</body>
+</html>
